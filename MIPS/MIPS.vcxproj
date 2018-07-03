@@ -116,11 +116,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Order.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Exception.hpp" />
     <ClInclude Include="MipsHead.h" />
-    <ClInclude Include="Order.hpp" />
+    <ClInclude Include="Order.h" />
+    <ClInclude Include="Program.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
