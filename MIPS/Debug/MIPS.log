@@ -1,2 +1,18 @@
 ﻿  main.cpp
-  MIPS.vcxproj -> f:\Documents\Projects\MIPS\Debug\MIPS.exe
+f:\documents\projects\mips\mips\main.cpp(11): error C2065: “Order”: 未声明的标识符
+f:\documents\projects\mips\mips\main.cpp(11): error C2923: “std::vector”: 对于参数“_Ty”，“Order”不是有效的 模板 类型变量
+f:\documents\projects\mips\mips\main.cpp(11): error C3203: “allocator”: 未专用化的 类 模板 不能用作 模板 变量，该变量属于 模板 参数“_Alloc”，应为 real 类型
+f:\documents\projects\mips\mips\main.cpp(11): error C2133: “orders”: 未知的大小
+f:\documents\projects\mips\mips\main.cpp(11): error C2512: “std::vector”: 没有合适的默认构造函数可用
+  e:\program files\microsoft visual studio\2017\community\vc\tools\msvc\14.12.25827\include\vector(658): note: 参见“std::vector”的声明
+f:\documents\projects\mips\mips\main.cpp(12): error C2228: “.eof”的左边必须有类/结构/联合
+f:\documents\projects\mips\mips\main.cpp(14): error C2672: “getline”: 未找到匹配的重载函数
+f:\documents\projects\mips\mips\main.cpp(14): error C2784: “std::basic_istream<_Elem,_Traits> &std::getline(std::basic_istream<_Elem,_Traits> &,std::basic_string<_Elem,_Traits,_Alloc> &)”: 未能从“std::ifstream (std::string [])”为“std::basic_istream<_Elem,_Traits> &”推导 模板 参数
+  e:\program files\microsoft visual studio\2017\community\vc\tools\msvc\14.12.25827\include\string(155): note: 参见“std::getline”的声明
+f:\documents\projects\mips\mips\main.cpp(14): error C2780: “std::basic_istream<_Elem,_Traits> &std::getline(std::basic_istream<_Elem,_Traits> &,std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 应输入 3 个参数，却提供了 2 个
+  e:\program files\microsoft visual studio\2017\community\vc\tools\msvc\14.12.25827\include\string(144): note: 参见“std::getline”的声明
+f:\documents\projects\mips\mips\main.cpp(14): error C2784: “std::basic_istream<_Elem,_Traits> &std::getline(std::basic_istream<_Elem,_Traits> &&,std::basic_string<_Elem,_Traits,_Alloc> &)”: 未能从“std::ifstream (std::string [])”为“std::basic_istream<_Elem,_Traits> &&”推导 模板 参数
+  e:\program files\microsoft visual studio\2017\community\vc\tools\msvc\14.12.25827\include\string(124): note: 参见“std::getline”的声明
+f:\documents\projects\mips\mips\main.cpp(14): error C2780: “std::basic_istream<_Elem,_Traits> &std::getline(std::basic_istream<_Elem,_Traits> &&,std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 应输入 3 个参数，却提供了 2 个
+  e:\program files\microsoft visual studio\2017\community\vc\tools\msvc\14.12.25827\include\string(71): note: 参见“std::getline”的声明
+f:\documents\projects\mips\mips\main.cpp(15): error C3861: “Order”: 找不到标识符
