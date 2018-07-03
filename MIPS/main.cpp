@@ -7,7 +7,7 @@ int main(int argc, char **argv)
     {
         return 0;
     }
-    ifstream codes(string(argv[1]));
+    ifstream codes(argv[1]);
     string code;
     vector<Order> orders;
     while (!codes.eof())

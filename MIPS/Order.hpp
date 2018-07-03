@@ -75,9 +75,9 @@ public:
                 c = 24;
             else if (s == "$t9")
                 c = 25;
-            else if (s == "$")
+            else if (s == "$k0")
                 c = 26;
-            else if (s == "$")
+            else if (s == "$k1")
                 c = 27;
             else if (s == "$gp")
                 c = 28;
