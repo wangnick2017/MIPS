@@ -21,6 +21,9 @@
     <ClCompile Include="Order.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Exception.hpp">

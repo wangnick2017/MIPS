@@ -64,11 +64,17 @@ int Arg::GetReg(const string &s)
         return 29;
     else if (s == "$fp")
         return 30;
-    else // s == "$ra"
+    else if (s == "$ra")
         return 31;
+    else if (s == "$hi")
+        return 32;
+    else if (s == "$lo")
+        return 33;
+    else // s == "$pc"
+        return 34;
 }
 
-Arg::Arg(const string &s, bool isStr)
+Arg::Arg(const string &s, OrderType orderType, bool isStr)
 {
     size_t leftBracket;
     if (isStr)
@@ -92,13 +98,16 @@ Arg::Arg(const string &s, bool isStr)
     else if ((leftBracket = s.find('(')) != string::npos)
     {
         type = ADDRESS;
-        c = leftBracket == 0 ? 0 : stoi(s.substr(0, leftBracket));
+        ll = leftBracket == 0 ? 0 : stoi(s.substr(0, leftBracket));
         r = GetReg(s.substr(leftBracket + 1, s.length() - leftBracket - 2));
     }
     else
     {
         type = IMM;
-        c = stoi(s);
+        if (orderType >= ADDU && orderType <= REMU)
+            ull = stoul(s);
+        else
+            ll = stoi(s);
     }
 }
 
@@ -159,10 +168,10 @@ string Reader::ReadFormatString()
     return ret;
 }
 
-void Reader::ReadArgs(vector<Arg> &args)
+void Reader::ReadArgs(vector<Arg> &args, OrderType orderType)
 {
     while (pos < len)
-        args.push_back(Arg(ReadString()));
+        args.push_back(Arg(ReadString(), orderType));
 }
 
 OrderType Order::GetType(const string &s, const string &all)
@@ -297,12 +306,23 @@ OrderType Order::GetType(const string &s, const string &all)
         return SYSCALL;
 }
 
-Order::Order(const string &s)
+OrderType Order::Type()
 {
+    return type;
+}
+
+Order::Order(const string &s, bool isLabel)
+{
+    if (isLabel)
+    {
+        type = __LABEL;
+        args.push_back(Arg(s, type, false));
+        return;
+    }
     Reader reader(s);
     type = GetType(reader.ReadString(), s);
     if (type == __ASCII || type == __ASCIIZ)
-        args.push_back(Arg(reader.ReadFormatString(), true));
+        args.push_back(Arg(reader.ReadFormatString(), type, true));
     else
-        reader.ReadArgs(args);
+        reader.ReadArgs(args, type);
 }
