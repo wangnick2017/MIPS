@@ -1,5 +1,5 @@
 #include "MipsHead.h"
-#include "Program.hpp"
+#include "Program.h"
 
 int main(int argc, char **argv)
 {

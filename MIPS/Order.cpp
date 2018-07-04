@@ -70,8 +70,10 @@ int Arg::GetReg(const string &s)
         return 32;
     else if (s == "$lo")
         return 33;
-    else // s == "$pc"
+    else if (s == "$pc")
         return 34;
+    else
+        return stoi(s.substr(1));
 }
 
 Arg::Arg(const string &s, OrderType orderType, bool isStr)
@@ -98,16 +100,18 @@ Arg::Arg(const string &s, OrderType orderType, bool isStr)
     else if ((leftBracket = s.find('(')) != string::npos)
     {
         type = ADDRESS;
-        ll = leftBracket == 0 ? 0 : stoi(s.substr(0, leftBracket));
+        v.i = leftBracket == 0 ? 0 : stoi(s.substr(0, leftBracket));
         r = GetReg(s.substr(leftBracket + 1, s.length() - leftBracket - 2));
     }
     else
     {
         type = IMM;
-        if (orderType >= ADDU && orderType <= REMU)
-            ull = stoul(s);
+        if (orderType == __HALF)
+            v.s[0] = stoi(s);
+        else if (orderType >= ADDU && orderType <= REMU)
+            v.ui = stoul(s);
         else
-            ll = stoi(s);
+            v.i = stoi(s);
     }
 }
 
@@ -311,16 +315,15 @@ OrderType Order::Type()
     return type;
 }
 
-Order::Order(const string &s, bool isLabel)
+Order::Order(Reader &reader, const string &first, bool isLabel)
 {
     if (isLabel)
     {
         type = __LABEL;
-        args.push_back(Arg(s, type, false));
+        args.push_back(Arg(first, type, false));
         return;
     }
-    Reader reader(s);
-    type = GetType(reader.ReadString(), s);
+    type = GetType(first, reader.input);
     if (type == __ASCII || type == __ASCIIZ)
         args.push_back(Arg(reader.ReadFormatString(), type, true));
     else

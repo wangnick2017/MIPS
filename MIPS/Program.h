@@ -11,16 +11,12 @@ private:
     {
         MemorySize = 4194304
     };
-    enum CodeMode
-    {
-        DATA, TEXT
-    };
 
     vector<Order> orders;
     map<string, int> labels;
+    map<int, char *> pointers;
     int reg[35];
     char *memory;
-    CodeMode mode;
 
 public:
     Program();

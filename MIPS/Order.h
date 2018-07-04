@@ -4,6 +4,7 @@
 #include "MipsHead.h"
 
 class Program;
+class Order;
 
 enum ArgType
 {
@@ -45,6 +46,21 @@ enum OrderType
     __LABEL
 };
 
+union Value
+{
+    int i;
+    unsigned int ui;
+    short s[2];
+    char c[4];
+};
+
+union BigNumber
+{
+    long long ll;
+    int i[2];
+    unsigned long long ull;
+    unsigned int ui[2];
+};
 
 class Arg
 {
@@ -52,8 +68,7 @@ class Arg
 private:
     ArgType type;
     int r;
-    int ll;
-    unsigned int ull;
+    Value v;
     string str;
     static int GetReg(const string &s);
 
@@ -63,6 +78,7 @@ public:
 
 class Reader
 {
+    friend class Order;
 private:
     const string &input;
     int pos, len;
@@ -83,7 +99,7 @@ private:
 
 public:
     OrderType Type();
-    Order(const string &s, bool isLabel = false);
+    Order(Reader &reader, const string &first, bool isLabel = false);
 };
 
 #endif // !ORDER

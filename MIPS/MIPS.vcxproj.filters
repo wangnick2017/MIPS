@@ -26,16 +26,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Exception.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="MipsHead.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Program.hpp">
+    <ClInclude Include="Order.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Order.h">
+    <ClInclude Include="Program.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -120,10 +120,9 @@
     <ClCompile Include="Program.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Exception.hpp" />
     <ClInclude Include="MipsHead.h" />
     <ClInclude Include="Order.h" />
-    <ClInclude Include="Program.hpp" />
+    <ClInclude Include="Program.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
