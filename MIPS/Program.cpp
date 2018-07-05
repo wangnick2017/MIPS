@@ -12,7 +12,7 @@ Program::~Program()
 
 void Program::InputCodes(char *fileName)
 {
-    ifstream codes("56.s");
+    ifstream codes(fileName);
     string code;
     stack<string> names;
     string tmp;
@@ -55,7 +55,7 @@ int Program::Run()
 {
     memset(memory, 0, MemorySize);
     memset(reg, 0, sizeof(reg));
-    reg[29] = (int)(memory + MemorySize);
+    reg[29] = MemorySize;
     int pc, ptr;
     int orderSize = orders.size();
     ++orderSize;
@@ -396,19 +396,19 @@ int Program::Run()
         }
         case LA:
         {
-            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : ((char *)reg[o.args[1].r] + o.args[1].v.i);
-            reg[o.args[0].r] = (int)p;
+            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : (memory + reg[o.args[1].r] + o.args[1].v.i);
+            reg[o.args[0].r] = p - memory;
             break;
         }
         case LB:
         {
-            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : ((char *)reg[o.args[1].r] + o.args[1].v.i);
+            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : (memory + reg[o.args[1].r] + o.args[1].v.i);
             reg[o.args[0].r] = *p;
             break;
         }
         case LH:
         {
-            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : ((char *)reg[o.args[1].r] + o.args[1].v.i);
+            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : (memory + reg[o.args[1].r] + o.args[1].v.i);
             Value v;
             v.c[0] = p[0];
             v.c[1] = p[1];
@@ -417,7 +417,7 @@ int Program::Run()
         }
         case LW:
         {
-            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : ((char *)reg[o.args[1].r] + o.args[1].v.i);
+            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : (memory + reg[o.args[1].r] + o.args[1].v.i);
             Value v;
             v.c[0] = p[0];
             v.c[1] = p[1];
@@ -428,13 +428,13 @@ int Program::Run()
         }
         case SB:
         {
-            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : ((char *)reg[o.args[1].r] + o.args[1].v.i);
+            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : (memory + reg[o.args[1].r] + o.args[1].v.i);
             p[0] = reg[o.args[0].r];
             break;
         }
         case SH:
         {
-            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : ((char *)reg[o.args[1].r] + o.args[1].v.i);
+            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : (memory + reg[o.args[1].r] + o.args[1].v.i);
             Value v;
             v.s[0] = reg[o.args[0].r];
             p[0] = v.c[0];
@@ -443,7 +443,7 @@ int Program::Run()
         }
         case SW:
         {
-            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : ((char *)reg[o.args[1].r] + o.args[1].v.i);
+            char *p = o.args[1].type == LABEL ? pointers[labels[o.args[1].str]] : (memory + reg[o.args[1].r] + o.args[1].v.i);
             Value v;
             v.i = reg[o.args[0].r];
             p[0] = v.c[0];
@@ -476,7 +476,7 @@ int Program::Run()
                 break;
             case 4:
             {
-                for (char *p = (char *)reg[4]; p && *p != 0; ++p)
+                for (char *p = memory + reg[4]; *p != 0; ++p)
                     cout << p[0];
                 break;
             }
@@ -487,7 +487,11 @@ int Program::Run()
             {
                 string tmp;
                 getline(cin, tmp);
-                char *p = (char *)reg[4];
+                if (tmp.length() == 0)
+                {
+                    getline(cin, tmp);
+                }
+                char *p = memory + reg[4];
                 int i = 0;
                 for (int j = min(reg[5] - 1, (int)tmp.length()); i < j; ++i)
                     p[i] = tmp[i];
@@ -497,7 +501,7 @@ int Program::Run()
             case 9:
                 if (ptr % 4 != 0)
                     ptr = 4 * (ptr / 4 + 1);
-                reg[2] = (int)(memory + ptr);
+                reg[2] = ptr;
                 ptr += reg[4];
                 break;
             case 10:
