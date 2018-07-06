@@ -1,0 +1,10 @@
+﻿  main.cpp
+  Order.cpp
+  Program.cpp
+  Reader.cpp
+  正在生成代码
+  21 of 712 functions ( 2.9%) were compiled, the rest were copied from previous compilation.
+    3 functions were new in current compilation
+    44 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  MIPS_Pipeline.vcxproj -> f:\Documents\Projects\MIPS\Release\MIPS_Pipeline.exe
