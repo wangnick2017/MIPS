@@ -1,44 +1,5 @@
 #include "Instruction.h"
 
-Arg::Arg(const string &s, OrderType orderType, bool isStr)
-{
-    size_t leftBracket;
-    if (isStr)
-    {
-        type = STR;
-        str = s;
-    }
-    else if (s[0] == '$')
-    {
-        type = REG;
-        if (s[1] >= '0' && s[1] <= '9')
-            r = stoi(s.substr(1, s.length() - 1));
-        else
-            r = GetReg(s);
-    }
-    else if (s[0] == '_' || s[0] >= 'a' && s[0] <= 'z')
-    {
-        type = LABEL;
-        str = s;
-    }
-    else if ((leftBracket = s.find('(')) != string::npos)
-    {
-        type = ADDRESS;
-        v.i = leftBracket == 0 ? 0 : stoi(s.substr(0, leftBracket));
-        r = GetReg(s.substr(leftBracket + 1, s.length() - leftBracket - 2));
-    }
-    else
-    {
-        type = IMM;
-        if (orderType == __HALF)
-            v.s[0] = stoi(s);
-        else if (orderType >= ADDU && orderType <= REMU)
-            v.ui = stoul(s);
-        else
-            v.i = stoi(s);
-    }
-}
-
 Instruction::Instruction(Reader &reader, const string &name)
 {
     string s1, s2, s3;
@@ -46,7 +7,6 @@ Instruction::Instruction(Reader &reader, const string &name)
     reader.ReadString(s2);
     bool haveS3 = reader.ReadString(s3);
     ULL u = IName[name];
-    unsigned long long u1, u2, u3;
     switch (u)
     {
     case LI:
@@ -63,10 +23,10 @@ Instruction::Instruction(Reader &reader, const string &name)
     case DIV:
         if (haveS3)
             tr.ull = s3[0] != '$' ? u | (RName[s1] << 6) | (RName[s2] << 11) | ((ULL)stoi(s3) << 16)
-                : 25ull | (RName[s1] << 6) | (RName[s2] << 11) | (RName[s3] << 16) | (u << 21);
+            : 25ull | (RName[s1] << 6) | (RName[s2] << 11) | (RName[s3] << 16) | (u << 21);
         else
             tr.ull = s3[0] != '$' ? (u + 4) | (RName[s1] << 11) | ((ULL)stoi(s2) << 16)
-                : 25ull | (RName[s1] << 11) | (RName[s2] << 16) | ((u + 4) << 21);
+            : 25ull | (RName[s1] << 11) | (RName[s2] << 16) | ((u + 4) << 21);
         break;
     case NEG:
         tr.ull = 9ull | (RName[s1] << 6) | (RName[s2] << 11);
@@ -112,81 +72,60 @@ Instruction::Instruction(Reader &reader, const string &name)
     case BLE:
     case BGT:
     case BLT:
-    {
-        tr.ull = s2[0] != '$' ? (u + 4) | (RName[s1] << 6) | ((ULL)stoi(s2) << 11) | ((ULL)stoi(s3) << 30)
-            : (u + 10) | (RName[s1] << 6) | (RName[s2] << 11) | ((ULL)stoi(s3) << 30);
+        tr.ull = s2[0] != '$' ? (u + 4) | (RName[s1] << 6) | ((ULL)stoi(s2) << 11) | ((ULL)jumpers[s3] << 30)
+            : (u + 10) | (RName[s1] << 6) | (RName[s2] << 11) | ((ULL)jumpers[s3] << 30);
         break;
-    }
     case BEQZ:
     case BNEZ:
     case BLEZ:
     case BGEZ:
     case BGTZ:
     case BLTZ:
-    {
-        tr.ull = (u + 10) | (RName[s1] << 6) | ((ULL)stoi(s2) << 11);
+        tr.ull = (u + 10) | (RName[s1] << 6) | ((ULL)jumpers[s2] << 11);
         break;
-    }
     case JR:
-    {
+        tr.ull = 45ull | (RName[s1] << 6);
         break;
-    }
     case JAL:
-    {
+        tr.ull = 46ull | ((ULL)jumpers[s1] << 6);
         break;
-    }
     case JALR:
-    {
+        tr.ull = 47ull | (RName[s1] << 6);
         break;
-    }
     case LA:
-    {
-        break;
-    }
     case LB:
-    {
-        break;
-    }
     case LH:
-    {
-        break;
-    }
     case LW:
-    {
-        break;
-    }
     case SB:
-    {
-        break;
-    }
     case SH:
-    {
-        break;
-    }
     case SW:
     {
+        ULL address, leftBracket;
+        if ((leftBracket = s2.find('(')) != string::npos)
+        {
+            int offset = leftBracket == 0 ? 0 : stoi(s2.substr(0, leftBracket));
+            address = RName[s2.substr(leftBracket + 1, s2.length() - leftBracket - 2)] + offset;
+        }
+        else
+            address = pointers[s2];
+        tr.ull = (u + 9) | (RName[s1] << 6) | (address << 11);
         break;
     }
     case MOVE:
-    {
+        tr.ull = 55ull | (RName[s1] << 6) | (RName[s2] << 11);
         break;
-    }
     case MFHI:
-    {
+        tr.ull = 56ull | (RName[s1] << 6);
         break;
-    }
     case MFLO:
-    {
+        tr.ull = 57ull | (RName[s1] << 6);
         break;
-    }
     case NOP:
-    {
+        tr.ull = 58;
         break;
-    }
     case SYSCALL:
-    {
+        tr.ull = 59;
         break;
-    }
     }
 }
 

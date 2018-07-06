@@ -17,9 +17,9 @@ using namespace std;
 typedef unsigned long long ULL;
 
 const int MemorySize = 4194304;
-map<string, ULL> RName;
-map<string, int> IName;
-map<string, int> jumpers;
-map<string, int> pointers;
+extern map<string, ULL> RName;
+extern map<string, int> IName;
+extern map<string, int> jumpers;
+extern map<string, int> pointers;
 
 #endif // !MIPSHEAD

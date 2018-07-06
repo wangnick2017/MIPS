@@ -1,6 +1,11 @@
 #include "Program.h"
 #include "Reader.h"
 
+map<string, ULL> RName;
+map<string, int> IName;
+map<string, int> jumpers;
+map<string, int> pointers;
+
 Program::Program()
 {
     memory = new char[MemorySize];
@@ -13,94 +18,94 @@ Program::~Program()
 
 void Program::InitNames()
 {
-    RegNames["$zero"] = 0;
-    RegNames["$at"] = 1;
-    RegNames["$v0"] = 2;
-    RegNames["$v1"] = 3;
-    RegNames["$a0"] = 4;
-    RegNames["$a1"] = 5;
-    RegNames["$a2"] = 6;
-    RegNames["$a3"] = 7;
-    RegNames["$t0"] = 8;
-    RegNames["$t1"] = 9;
-    RegNames["$t2"] = 10;
-    RegNames["$t3"] = 11;
-    RegNames["$t4"] = 12;
-    RegNames["$t5"] = 13;
-    RegNames["$t6"] = 14;
-    RegNames["$t7"] = 15;
-    RegNames["$s0"] = 16;
-    RegNames["$s1"] = 17;
-    RegNames["$s2"] = 18;
-    RegNames["$s3"] = 19;
-    RegNames["$s4"] = 20;
-    RegNames["$s5"] = 21;
-    RegNames["$s6"] = 22;
-    RegNames["$s7"] = 23;
-    RegNames["$t8"] = 24;
-    RegNames["$t9"] = 25;
-    RegNames["$k0"] = 26;
-    RegNames["$k1"] = 27;
-    RegNames["$gp"] = 28;
-    RegNames["$sp"] = 29;
-    RegNames["$fp"] = 30;
-    RegNames["$ra"] = 31;
-    RegNames["$hi"] = 32;
-    RegNames["$lo"] = 33;
-    RegNames["$pc"] = 34;
+    RName["$zero"] = 0;
+    RName["$at"] = 1;
+    RName["$v0"] = 2;
+    RName["$v1"] = 3;
+    RName["$a0"] = 4;
+    RName["$a1"] = 5;
+    RName["$a2"] = 6;
+    RName["$a3"] = 7;
+    RName["$t0"] = 8;
+    RName["$t1"] = 9;
+    RName["$t2"] = 10;
+    RName["$t3"] = 11;
+    RName["$t4"] = 12;
+    RName["$t5"] = 13;
+    RName["$t6"] = 14;
+    RName["$t7"] = 15;
+    RName["$s0"] = 16;
+    RName["$s1"] = 17;
+    RName["$s2"] = 18;
+    RName["$s3"] = 19;
+    RName["$s4"] = 20;
+    RName["$s5"] = 21;
+    RName["$s6"] = 22;
+    RName["$s7"] = 23;
+    RName["$t8"] = 24;
+    RName["$t9"] = 25;
+    RName["$k0"] = 26;
+    RName["$k1"] = 27;
+    RName["$gp"] = 28;
+    RName["$sp"] = 29;
+    RName["$fp"] = 30;
+    RName["$ra"] = 31;
+    RName["$hi"] = 32;
+    RName["$lo"] = 33;
+    RName["$pc"] = 34;
     for (int i = 0; i <= 34; ++i)
-        RegNames["$" + to_string(i)] = i;
-    InsNames["li"] = LI;
-    InsNames["add"] = ADD;
-    InsNames["sub"] = SUB;
-    InsNames["mul"] = MUL;
-    InsNames["div"] = DIV;
-    InsNames["xor"] = XOR;
-    InsNames["neg"] = NEG;
-    InsNames["rem"] = REM;
-    InsNames["addu"] = ADDU;
-    InsNames["addiu"] = ADDIU;
-    InsNames["subu"] = SUBU;
-    InsNames["mulu"] = MULU;
-    InsNames["divu"] = DIVU;
-    InsNames["xoru"] = XORU;
-    InsNames["negu"] = NEGU;
-    InsNames["remu"] = REMU;
-    InsNames["seq"] = SEQ;
-    InsNames["sge"] = SGE;
-    InsNames["sgt"] = SGT;
-    InsNames["sle"] = SLE;
-    InsNames["slt"] = SLT;
-    InsNames["sne"] = SNE;
-    InsNames["b"] = B;
-    InsNames["beq"] = BEQ;
-    InsNames["bne"] = BNE;
-    InsNames["bge"] = BGE;
-    InsNames["ble"] = BLE;
-    InsNames["bgt"] = BGT;
-    InsNames["blt"] = BLT;
-    InsNames["beqz"] = BEQZ;
-    InsNames["bnez"] = BNEZ;
-    InsNames["blez"] = BLEZ;
-    InsNames["bgez"] = BGEZ;
-    InsNames["bgtz"] = BGTZ;
-    InsNames["bltz"] = BLTZ;
-    InsNames["j"] = J;
-    InsNames["jr"] = JR;
-    InsNames["jal"] = JAL;
-    InsNames["jalr"] = JALR;
-    InsNames["la"] = LA;
-    InsNames["lb"] = LB;
-    InsNames["lh"] = LH;
-    InsNames["lw"] = LW;
-    InsNames["sb"] = SB;
-    InsNames["sh"] = SH;
-    InsNames["sw"] = SW;
-    InsNames["move"] = MOVE;
-    InsNames["mfhi"] = MFHI;
-    InsNames["mflo"] = MFLO;
-    InsNames["nop"] = NOP;
-    InsNames["syscall"] = SYSCALL;
+        RName["$" + to_string(i)] = i;
+    IName["li"] = LI;
+    IName["add"] = ADD;
+    IName["sub"] = SUB;
+    IName["mul"] = MUL;
+    IName["div"] = DIV;
+    IName["xor"] = XOR;
+    IName["neg"] = NEG;
+    IName["rem"] = REM;
+    IName["addu"] = ADDU;
+    IName["addiu"] = ADDIU;
+    IName["subu"] = SUBU;
+    IName["mulu"] = MULU;
+    IName["divu"] = DIVU;
+    IName["xoru"] = XORU;
+    IName["negu"] = NEGU;
+    IName["remu"] = REMU;
+    IName["seq"] = SEQ;
+    IName["sge"] = SGE;
+    IName["sgt"] = SGT;
+    IName["sle"] = SLE;
+    IName["slt"] = SLT;
+    IName["sne"] = SNE;
+    IName["b"] = B;
+    IName["beq"] = BEQ;
+    IName["bne"] = BNE;
+    IName["bge"] = BGE;
+    IName["ble"] = BLE;
+    IName["bgt"] = BGT;
+    IName["blt"] = BLT;
+    IName["beqz"] = BEQZ;
+    IName["bnez"] = BNEZ;
+    IName["blez"] = BLEZ;
+    IName["bgez"] = BGEZ;
+    IName["bgtz"] = BGTZ;
+    IName["bltz"] = BLTZ;
+    IName["j"] = J;
+    IName["jr"] = JR;
+    IName["jal"] = JAL;
+    IName["jalr"] = JALR;
+    IName["la"] = LA;
+    IName["lb"] = LB;
+    IName["lh"] = LH;
+    IName["lw"] = LW;
+    IName["sb"] = SB;
+    IName["sh"] = SH;
+    IName["sw"] = SW;
+    IName["move"] = MOVE;
+    IName["mfhi"] = MFHI;
+    IName["mflo"] = MFLO;
+    IName["nop"] = NOP;
+    IName["syscall"] = SYSCALL;
 }
 
 void Program::InputCodes(char *fileName)
@@ -222,7 +227,7 @@ void Program::InputCodes(char *fileName)
 
 int Program::Run()
 {
-    int pc, ptr;
+    /*int pc, ptr;
     for (pc = labels["main"]; ; ++pc)
     {
         Order &o = orders[pc];
@@ -612,6 +617,6 @@ int Program::Run()
         default:
             break;
         }
-    }
+    }*/
     return 0;
 }
