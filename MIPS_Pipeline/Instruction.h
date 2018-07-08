@@ -7,11 +7,13 @@
 enum InstructionType
 {
     LI,
-    ADD, SUB, MUL, DIV, XOR, REM, NEG,
-    ADDU, SUBU, MULU, DIVU, XORU, REMU, NEGU, ADDIU,
-    SEQ, SGE, SGT, SLE, SLT, SNE,
-    B, BEQ, BNE, BGE, BLE, BGT, BLT, BEQZ, BNEZ, BLEZ, BGEZ, BGTZ, BLTZ,
-    J, JR, JAL, JALR,
+    ADD, SUB, MUL, DIV, REM, XOR,
+    SEQ, SNE, SLE, SLT, SGE, SGT,
+    ADDU, SUBU, MULU, DIVU, REMU, XORU,
+    MULSUB, DIVSUB, MULUSUB, DIVUSUB,
+    NEG, NEGU,
+    B, BEQ, BNE, BLE, BLT, BGE, BGT, BEQZ, BNEZ, BLEZ, BLTZ, BGEZ, BGTZ,
+    JR, JAL, JALR,
     LA, LB, LH, LW,
     SB, SH, SW,
     MOVE, MFHI, MFLO,
@@ -22,7 +24,7 @@ enum InstructionType
 union Word
 {
     int i;
-    unsigned int ui;
+    UI ui;
     short s[2];
     char c[4];
 };
@@ -35,19 +37,20 @@ union Half
 
 union Transcode
 {
-    unsigned long long ull;
+    ULL ull;
     char c[8];
 };
 
 class Instruction
 {
 private:
-    InstructionType type;
     Transcode tr;
 
 public:
+    ULL rs, rt, rd, imm, name;
+
     Instruction(Reader &reader, const string &name);
-    //Instruction();
+    Instruction(char *memory, int ptr);
     void WriteMemory(char *memory, int &ptr);
 };
 

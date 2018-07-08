@@ -14,9 +14,11 @@
 
 using namespace std;
 
+typedef unsigned int UI;
 typedef unsigned long long ULL;
 
 const int MemorySize = 4194304;
+
 extern map<string, ULL> RName;
 extern map<string, int> IName;
 extern map<string, int> jumpers;

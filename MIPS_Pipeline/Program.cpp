@@ -60,11 +60,15 @@ void Program::InitNames()
     IName["sub"] = SUB;
     IName["mul"] = MUL;
     IName["div"] = DIV;
+    IName["mulsub"] = MULSUB;
+    IName["mulusub"] = MULUSUB;
+    IName["divsub"] = DIVSUB;
+    IName["divusub"] = DIVUSUB;
     IName["xor"] = XOR;
     IName["neg"] = NEG;
     IName["rem"] = REM;
     IName["addu"] = ADDU;
-    IName["addiu"] = ADDIU;
+    IName["addiu"] = ADDU;
     IName["subu"] = SUBU;
     IName["mulu"] = MULU;
     IName["divu"] = DIVU;
@@ -90,7 +94,7 @@ void Program::InitNames()
     IName["bgez"] = BGEZ;
     IName["bgtz"] = BGTZ;
     IName["bltz"] = BLTZ;
-    IName["j"] = J;
+    IName["j"] = B;
     IName["jr"] = JR;
     IName["jal"] = JAL;
     IName["jalr"] = JALR;
@@ -145,7 +149,7 @@ void Program::InputCodes(char *fileName)
         {
             while (!names.empty())
             {
-                jumpers.insert(pair<string, int>(names.top(), ptr));
+                jumpers.insert(pair<string, int>(names.top(), ptr / 8));
                 names.pop();
             }
             Instruction ins(reader, tmp);

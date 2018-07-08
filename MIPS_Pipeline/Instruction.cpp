@@ -7,90 +7,79 @@ Instruction::Instruction(Reader &reader, const string &name)
     reader.ReadString(s2);
     bool haveS3 = reader.ReadString(s3);
     ULL u = IName[name];
+    if ((u == MUL || u == MULU || u == DIV || u == DIVU) && !haveS3)
+        u = IName[name + "sub"];
     switch (u)
     {
     case LI:
-        tr.ull = (RName[s1] << 6) | ((ULL)stoi(s2) << 11);
+        tr.ull = (RName[s1] << 18) | ((ULL)stoi(s2) << 32);
         break;
     case ADD:
     case SUB:
-    case XOR:
-    case REM:
-        tr.ull = s3[0] != '$' ? u | (RName[s1] << 6) | (RName[s2] << 11) | ((ULL)stoi(s3) << 16)
-            : 25ull | (RName[s1] << 6) | (RName[s2] << 11) | (RName[s3] << 16) | (u << 21);
-        break;
     case MUL:
     case DIV:
-        if (haveS3)
-            tr.ull = s3[0] != '$' ? u | (RName[s1] << 6) | (RName[s2] << 11) | ((ULL)stoi(s3) << 16)
-            : 25ull | (RName[s1] << 6) | (RName[s2] << 11) | (RName[s3] << 16) | (u << 21);
-        else
-            tr.ull = s3[0] != '$' ? (u + 4) | (RName[s1] << 11) | ((ULL)stoi(s2) << 16)
-            : 25ull | (RName[s1] << 11) | (RName[s2] << 16) | ((u + 4) << 21);
-        break;
-    case NEG:
-        tr.ull = 9ull | (RName[s1] << 6) | (RName[s2] << 11);
+    case REM:
+    case XOR:
+    case SEQ:
+    case SNE:
+    case SLE:
+    case SLT:
+    case SGE:
+    case SGT:
+        tr.ull = s3[0] != '$' ? 1ull | (RName[s1] << 18) | (RName[s2] << 6) | (u << 24) | ((ULL)stoi(s3) << 32)
+            : 2ull | (RName[s1] << 18) | (RName[s2] << 6) | (RName[s3] << 12) | (u << 24);
         break;
     case ADDU:
     case SUBU:
-    case XORU:
-    case REMU:
-        tr.ull = s3[0] != '$' ? (u + 2) | (RName[s1] << 6) | (RName[s2] << 11) | (stoull(s3) << 16)
-            : 25ull | (RName[s1] << 6) | (RName[s2] << 11) | (RName[s3] << 16) | ((u + 2) << 21);
-        break;
     case MULU:
     case DIVU:
-        if (haveS3)
-            tr.ull = s3[0] != '$' ? (u + 2) | (RName[s1] << 6) | (RName[s2] << 11) | (stoull(s3) << 16)
-            : 25ull | (RName[s1] << 6) | (RName[s2] << 11) | (RName[s3] << 16) | ((u + 2) << 21);
-        else
-            tr.ull = s3[0] != '$' ? (u + 6) | (RName[s1] << 11) | (stoull(s2) << 16)
-            : 25ull | (RName[s1] << 11) | (RName[s2] << 16) | ((u + 6) << 21);
+    case REMU:
+    case XORU:
+        tr.ull = s3[0] != '$' ? 1ull | (RName[s1] << 18) | (RName[s2] << 6) | (u << 24) | (stoull(s3) << 32)
+            : 2ull | (RName[s1] << 18) | (RName[s2] << 6) | (RName[s3] << 12) | (u << 24);
         break;
+    case MULSUB:
+    case DIVSUB:
+        tr.ull = s2[0] != '$' ? 3ull | (RName[s1] << 6) | (u << 24) | ((ULL)stoi(s2) << 32)
+            : 4ull | (RName[s1] << 6) | (RName[s2] << 12) | (u << 24);
+        break;
+    case MULUSUB:
+    case DIVUSUB:
+        tr.ull = s2[0] != '$' ? 3ull | (RName[s1] << 6) | (u << 24) | (stoull(s2) << 32)
+            : 4ull | (RName[s1] << 6) | (RName[s2] << 12) | (u << 24);
+        break;
+    case NEG:
     case NEGU:
-        tr.ull = 18ull | (RName[s1] << 6) | (RName[s2] << 11);
-        break;
-    case ADDIU:
-        tr.ull = 10ull | (RName[s1] << 6) | (RName[s2] << 11) | (stoull(s3) << 16);
-        break;
-    case SEQ:
-    case SGE:
-    case SGT:
-    case SLE:
-    case SLT:
-    case SNE:
-        tr.ull = s3[0] != '$' ? (u + 3) | (RName[s1] << 6) | (RName[s2] << 11) | ((ULL)stoi(s3) << 16)
-            : 25ull | (RName[s1] << 6) | (RName[s2] << 11) | (RName[s3] << 16) | ((u + 3) << 21);
+        tr.ull = 4ull | (RName[s1] << 6) | (RName[s2] << 12) | (u << 24);
         break;
     case B:
-    case J:
-        tr.ull = 26ull | ((ULL)jumpers[s1] << 6);
+        tr.ull = 5ull | ((ULL)jumpers[s1] << 18);
         break;
     case BEQ:
     case BNE:
-    case BGE:
     case BLE:
-    case BGT:
     case BLT:
-        tr.ull = s2[0] != '$' ? (u + 4) | (RName[s1] << 6) | ((ULL)stoi(s2) << 11) | ((ULL)jumpers[s3] << 30)
-            : (u + 10) | (RName[s1] << 6) | (RName[s2] << 11) | ((ULL)jumpers[s3] << 30);
+    case BGE:
+    case BGT:
+        tr.ull = s2[0] != '$' ? (u - 20) | (RName[s1] << 6) | ((ULL)jumpers[s3] << 18) | ((ULL)stoi(s2) << 32)
+            : (u - 14) | (RName[s1] << 6) | (RName[s2] << 12) | ((ULL)jumpers[s3] << 18);
         break;
     case BEQZ:
     case BNEZ:
     case BLEZ:
+    case BLTZ:
     case BGEZ:
     case BGTZ:
-    case BLTZ:
-        tr.ull = (u + 10) | (RName[s1] << 6) | ((ULL)jumpers[s2] << 11);
+        tr.ull = (u - 14) | (RName[s1] << 6) | ((ULL)jumpers[s2] << 18);
         break;
     case JR:
-        tr.ull = 45ull | (RName[s1] << 6);
+        tr.ull = 24ull | (RName[s1] << 6);
         break;
     case JAL:
-        tr.ull = 46ull | ((ULL)jumpers[s1] << 6);
+        tr.ull = 25ull | ((ULL)jumpers[s1] << 18);
         break;
     case JALR:
-        tr.ull = 47ull | (RName[s1] << 6);
+        tr.ull = 26ull | (RName[s1] << 6);
         break;
     case LA:
     case LB:
@@ -108,29 +97,46 @@ Instruction::Instruction(Reader &reader, const string &name)
         }
         else
             address = pointers[s2];
-        tr.ull = (u + 9) | (RName[s1] << 6) | (address << 11);
+        tr.ull = 27ull | (RName[s1] << (u < SB ? 18 : 6)) | (u << 24) | (address << 32);
         break;
     }
     case MOVE:
-        tr.ull = 55ull | (RName[s1] << 6) | (RName[s2] << 11);
+        tr.ull = 28ull | (RName[s1] << 18) | (RName[s2] << 6);
         break;
     case MFHI:
-        tr.ull = 56ull | (RName[s1] << 6);
+        tr.ull = 29ull | (RName[s1] << 18);
         break;
     case MFLO:
-        tr.ull = 57ull | (RName[s1] << 6);
+        tr.ull = 30ull | (RName[s1] << 18);
         break;
     case NOP:
-        tr.ull = 58;
+        tr.ull = 31;
         break;
     case SYSCALL:
-        tr.ull = 59;
+        tr.ull = 32;
+        break;
+    }
+}
+
+Instruction::Instruction(char *memory, int ptr)
+{
+    for (int i = 0; i < 8; ++i)
+        tr.c[i] = memory[ptr + i];
+    ULL u = tr.ull & 0x3Full;
+    rs = tr.ull & 0xFC0ull;
+    rt = tr.ull & 0x3F000ull;
+    imm = tr.ull & 0xFFFFFFFF00000000ull;
+    switch (u)
+    {
+    case 0:
+        name = 0;
+        rd = tr.ull & 0xFC0000ull;
         break;
     }
 }
 
 void Instruction::WriteMemory(char *memory, int &ptr)
 {
-    for (int i = 0; i < 6; ++i)
+    for (int i = 0; i < 8; ++i)
         memory[ptr++] = tr.c[i];
 }
