@@ -14,6 +14,7 @@
 
 using namespace std;
 
+typedef long long LL;
 typedef unsigned int UI;
 typedef unsigned long long ULL;
 

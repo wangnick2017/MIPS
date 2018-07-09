@@ -47,8 +47,10 @@ private:
     Transcode tr;
 
 public:
-    ULL rs, rt, rd, imm, name;
+    ULL rs, rt, rd, imm, name, u, address, jumpto;
+    int offset;
 
+    Instruction();
     Instruction(Reader &reader, const string &name);
     Instruction(char *memory, int ptr);
     void WriteMemory(char *memory, int &ptr);

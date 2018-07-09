@@ -3,11 +3,12 @@
 
 #include "MipsHead.h"
 #include "Instruction.h"
+#include "Pipeline.h"
 
 class Program
 {
 private:
-    int reg[35];
+    int reg[36];
     char *memory;
     int ptr;
 

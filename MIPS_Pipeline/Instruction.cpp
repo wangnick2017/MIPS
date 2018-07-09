@@ -1,5 +1,9 @@
 #include "Instruction.h"
 
+Instruction::Instruction()
+{
+}
+
 Instruction::Instruction(Reader &reader, const string &name)
 {
     string s1, s2, s3;
@@ -50,10 +54,10 @@ Instruction::Instruction(Reader &reader, const string &name)
         break;
     case NEG:
     case NEGU:
-        tr.ull = 4ull | (RName[s1] << 6) | (RName[s2] << 12) | (u << 24);
+        tr.ull = 5ull | (RName[s1] << 18) | (RName[s2] << 6) | (u << 24);
         break;
     case B:
-        tr.ull = 5ull | ((ULL)jumpers[s1] << 18);
+        tr.ull = 6ull | ((ULL)jumpers[s1] << 18);
         break;
     case BEQ:
     case BNE:
@@ -61,8 +65,8 @@ Instruction::Instruction(Reader &reader, const string &name)
     case BLT:
     case BGE:
     case BGT:
-        tr.ull = s2[0] != '$' ? (u - 20) | (RName[s1] << 6) | ((ULL)jumpers[s3] << 18) | ((ULL)stoi(s2) << 32)
-            : (u - 14) | (RName[s1] << 6) | (RName[s2] << 12) | ((ULL)jumpers[s3] << 18);
+        tr.ull = s2[0] != '$' ? (u - 19) | (RName[s1] << 6) | ((ULL)jumpers[s3] << 18) | ((ULL)stoi(s2) << 32)
+            : (u - 13) | (RName[s1] << 6) | (RName[s2] << 12) | ((ULL)jumpers[s3] << 18);
         break;
     case BEQZ:
     case BNEZ:
@@ -70,16 +74,16 @@ Instruction::Instruction(Reader &reader, const string &name)
     case BLTZ:
     case BGEZ:
     case BGTZ:
-        tr.ull = (u - 14) | (RName[s1] << 6) | ((ULL)jumpers[s2] << 18);
+        tr.ull = (u - 13) | (RName[s1] << 6) | ((ULL)jumpers[s2] << 18);
         break;
     case JR:
-        tr.ull = 24ull | (RName[s1] << 6);
+        tr.ull = 25ull | (RName[s1] << 6);
         break;
     case JAL:
-        tr.ull = 25ull | ((ULL)jumpers[s1] << 18);
+        tr.ull = 26ull | ((ULL)jumpers[s1] << 18);
         break;
     case JALR:
-        tr.ull = 26ull | (RName[s1] << 6);
+        tr.ull = 27ull | (RName[s1] << 6);
         break;
     case LA:
     case LB:
@@ -89,31 +93,32 @@ Instruction::Instruction(Reader &reader, const string &name)
     case SH:
     case SW:
     {
-        ULL address, leftBracket;
+        ULL address = 0, leftBracket;
+        int offset = 0;
         if ((leftBracket = s2.find('(')) != string::npos)
         {
-            int offset = leftBracket == 0 ? 0 : stoi(s2.substr(0, leftBracket));
-            address = RName[s2.substr(leftBracket + 1, s2.length() - leftBracket - 2)] + offset;
+            offset = leftBracket == 0 ? 0 : stoi(s2.substr(0, leftBracket));
+            address = RName[s2.substr(leftBracket + 1, s2.length() - leftBracket - 2)];
         }
         else
-            address = pointers[s2];
-        tr.ull = 27ull | (RName[s1] << (u < SB ? 18 : 6)) | (u << 24) | (address << 32);
+            offset = pointers[s2];
+        tr.ull = 28ull | (RName[s1] << (u < SB ? 18 : 6)) | (u << 24) | (address << 12) | ((ULL)offset << 32);
         break;
     }
     case MOVE:
-        tr.ull = 28ull | (RName[s1] << 18) | (RName[s2] << 6);
+        tr.ull = 29ull | (RName[s1] << 18) | (RName[s2] << 6);
         break;
     case MFHI:
-        tr.ull = 29ull | (RName[s1] << 18);
-        break;
-    case MFLO:
         tr.ull = 30ull | (RName[s1] << 18);
         break;
+    case MFLO:
+        tr.ull = 31ull | (RName[s1] << 18);
+        break;
     case NOP:
-        tr.ull = 31;
+        tr.ull = 32;
         break;
     case SYSCALL:
-        tr.ull = 32;
+        tr.ull = 33;
         break;
     }
 }
@@ -122,17 +127,14 @@ Instruction::Instruction(char *memory, int ptr)
 {
     for (int i = 0; i < 8; ++i)
         tr.c[i] = memory[ptr + i];
-    ULL u = tr.ull & 0x3Full;
+    name = tr.ull & 0x3Full;
+    u = tr.ull & 0xFF000000ull;
     rs = tr.ull & 0xFC0ull;
-    rt = tr.ull & 0x3F000ull;
+    address = rt = tr.ull & 0x3F000ull;
+    rd = tr.ull & 0xFC0000ull;
+    jumpto = tr.ull & 0xFFFC0000ull;
     imm = tr.ull & 0xFFFFFFFF00000000ull;
-    switch (u)
-    {
-    case 0:
-        name = 0;
-        rd = tr.ull & 0xFC0000ull;
-        break;
-    }
+    offset = (int)imm;
 }
 
 void Instruction::WriteMemory(char *memory, int &ptr)
