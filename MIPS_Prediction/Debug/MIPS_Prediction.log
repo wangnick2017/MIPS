@@ -1,0 +1,18 @@
+﻿  main.cpp
+  Program.cpp
+  Pipeline.cpp
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(82): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(120): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(125): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(151): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(194): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(197): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(200): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(203): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(209): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(229): warning C4244: “=”: 从“LL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(230): warning C4244: “=”: 从“LL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(242): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+f:\documents\projects\mips\mips_prediction\pipeline.cpp(243): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+  正在生成代码...
+  MIPS_Prediction.vcxproj -> f:\Documents\Projects\MIPS\Debug\MIPS_Prediction.exe

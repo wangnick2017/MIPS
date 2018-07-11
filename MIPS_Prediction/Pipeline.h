@@ -46,7 +46,7 @@ public:
     struct MEM_WB
     {
         Instruction ir;
-        int aluOutput, lmd;
+        int aluOutput;
         void Clear();
     };
 
@@ -55,8 +55,8 @@ public:
     EX_MEM ex_mem;
     MEM_WB mem_wb;
 
-    bool lock1, lock2, lock3, lock4, lock5;
-    int free1, free2, free3, free4, free5;
+    bool lock2, lock3;
+    int free2, free3, free4, free5;
 
     void IF();
     void ID();

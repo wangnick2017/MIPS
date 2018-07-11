@@ -1,0 +1,22 @@
+﻿  Pipeline.cpp
+Pipeline.cpp(82): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+Pipeline.cpp(120): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+Pipeline.cpp(125): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+Pipeline.cpp(151): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+Pipeline.cpp(194): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+Pipeline.cpp(197): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+Pipeline.cpp(200): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+Pipeline.cpp(203): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+Pipeline.cpp(209): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+Pipeline.cpp(229): warning C4244: “=”: 从“LL”转换到“int”，可能丢失数据
+Pipeline.cpp(230): warning C4244: “=”: 从“LL”转换到“int”，可能丢失数据
+Pipeline.cpp(242): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+Pipeline.cpp(243): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
+  Program.cpp
+  main.cpp
+  正在生成代码
+  14 of 680 functions ( 2.1%) were compiled, the rest were copied from previous compilation.
+    2 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  MIPS_Prediction.vcxproj -> f:\Documents\Projects\MIPS\Release\MIPS_Prediction.exe

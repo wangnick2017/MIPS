@@ -26,4 +26,8 @@ extern map<string, int> IName;
 extern map<string, int> jumpers;
 extern map<string, int> pointers;
 
+const int CodeSize = 10000;
+extern unsigned char Predictor[CodeSize][16];
+extern unsigned char HistoryTable[CodeSize];
+
 #endif // !MIPSHEAD

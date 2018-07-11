@@ -126,6 +126,7 @@ Instruction::Instruction(Reader &reader, const string &name)
 
 Instruction::Instruction(char *memory, int ptr)
 {
+    th = ptr >> 3;
     for (int i = 0; i < 8; ++i)
         tr.c[i] = memory[ptr + i];
     name = tr.ull & 0x3Full;
@@ -133,7 +134,7 @@ Instruction::Instruction(char *memory, int ptr)
     rs = (tr.ull >> 6) & 0x3Full;
     address = rt = (tr.ull >> 12) & 0x3Full;
     rd = (tr.ull >> 18) & 0x3Full;
-    jumpto = ((tr.ull >> 18) & 0x3FFFull) * 8;
+    jumpto = ((tr.ull >> 18) & 0x3FFFull) << 3;
     imm = (tr.ull >> 32) & 0xFFFFFFFFull;
     offset = (int)imm;
 }

@@ -5,6 +5,8 @@ map<string, ULL> RName;
 map<string, int> IName;
 map<string, int> jumpers;
 map<string, int> pointers;
+unsigned char Predictor[CodeSize][16];
+unsigned char HistoryTable[CodeSize];
 
 Program::Program()
 {
@@ -151,7 +153,7 @@ void Program::InputCodes(char *fileName)
         {
             while (!names.empty())
             {
-                jumpers.insert(pair<string, int>(names.top(), ptr / 8));
+                jumpers.insert(pair<string, int>(names.top(), ptr >> 3));
                 names.pop();
             }
             ptr += 8;
@@ -244,11 +246,10 @@ void Program::InputCodes(char *fileName)
 int Program::Run()
 {
     Pipeline pipeline(reg, memory, ptr);
-    reg[34] = jumpers["main"] * 8;
+    reg[34] = jumpers["main"] << 3;
     bool running = true;
     int ret;
-    int cnt = 0;
     while (running)
-        pipeline.Pipe(running, ret), ++cnt;
+        pipeline.Pipe(running, ret);
     return ret;
 }

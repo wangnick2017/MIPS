@@ -26,45 +26,23 @@ void Pipeline::MEM_WB::Clear()
     ir.name = NULLName;
     ir.rs = ir.rt = ir.rd = 0;
     ir.address = 0;
-    lmd = 0;
 }
 
 Pipeline::Pipeline(int *r, char *m, int p)
-    : reg(r), memory(m), ptr(p)
+    : reg(r), memory(m), ptr(p), lock2(false), lock3(false)
 {
-    lock1 = lock2 = lock3 = lock4 = lock5 = false;
-    free1 = free2 = free3 = free4 = free5 = 0;
+    free2 = free3 = free4 = free5 = 0;
 }
 
 void Pipeline::IF()
 {
-    if (ex_mem.ir.name >= 7 && ex_mem.ir.name <= 24 && ex_mem.cond)
-        reg[34] = ex_mem.aluOutput;
     if (lock3 || lock2)
         return;
-    if (free1 > 0)
+    if (mem_wb.ir.name == 28) //Structure Hazard
     {
-        --free1;
         ++free2;
         return;
     }
-    if (id_ex.ir.name >= 7 && id_ex.ir.name <= 24) //·ÖÖ§Ô¤²â
-    {
-        free2 += 1;
-        return;
-    }
-    /*if (if_id.ir.name >= 6 && if_id.ir.name <= 27)
-    {
-        free1 += 2;
-        return;
-    }*/
-    if (mem_wb.ir.name == 28) //structure
-    {
-        lock1 = true;
-        ++free2;
-        return;
-    }
-    //cout << reg[34] / 8 << endl;
     if_id.ir = Instruction(memory, reg[34]);
     if (if_id.ir.name == 33)
     {
@@ -77,15 +55,48 @@ void Pipeline::ID()
 {
     if (lock3)
         return;
+    //Check the prediction
+    if (ex_mem.ir.name >= 7 && ex_mem.ir.name <= 24)
+    {
+        int th = ex_mem.ir.th;
+        unsigned char &c = Predictor[th][HistoryTable[th]];
+        bool flag = ((c & 1) == 1) == ex_mem.cond;
+        switch (c)
+        {
+        case 3:
+            c = ex_mem.cond ? 3 : 1;
+            break;
+        case 1:
+            c = ex_mem.cond ? 3 : 2;
+            break;
+        case 2:
+            c = ex_mem.cond ? 1 : 0;
+            break;
+        case 0:
+            c = ex_mem.cond ? 2 : 0;
+            break;
+        }
+        HistoryTable[th] = ((HistoryTable[th] & 0x7u) << 1) | (ex_mem.cond & 1);
+        if (!flag) //Prediction failed
+        {
+            reg[34] = ex_mem.cond ? ex_mem.ir.jumpto : ((ex_mem.ir.th + 1) << 3);
+            id_ex.ir.name = 32;
+            id_ex.ir.rd = 0;
+            if_id.Clear();
+            if (free2 > 0)
+                --free2;
+            return;
+        }
+    }
     if (free2 > 0)
     {
         --free2;
         ++free3;
         return;
     }
+    //Data Hazard
     if (if_id.ir.rs != 0 && (if_id.ir.rs == id_ex.ir.rd || if_id.ir.rs == ex_mem.ir.rd || if_id.ir.rs == mem_wb.ir.rd) ||
         if_id.ir.rt != 0 && (if_id.ir.rt == id_ex.ir.rd || if_id.ir.rt == ex_mem.ir.rd || if_id.ir.rt == mem_wb.ir.rd))
-        //(if_id.ir.rs == 32 || if_id.ir.rt == 33) && (if_id.ir.name == 3 || if_id.ir.name == 4 || ex_mem.ir.name == 3 || ex_mem.ir.name == 4 || mem_wb.ir.name == 3 || mem_wb.ir.name == 4))
     {
         lock2 = true;
         ++free3;
@@ -101,25 +112,25 @@ void Pipeline::ID()
         if (id_ex.a == 5 || id_ex.a == 9)
             id_ex.ir.rd = 2;
     }
+
     id_ex.npc = reg[34] + 8;
-    if (if_id.ir.name == 6 || if_id.ir.name == 26)
+    if (if_id.ir.name >= 7 && if_id.ir.name <= 24) //Prediction
     {
+        if (Predictor[if_id.ir.th][HistoryTable[if_id.ir.th]] & 1)
+            reg[34] = if_id.ir.jumpto;
+        else
+            reg[34] += 8;
+    }
+    else if (if_id.ir.name == 6 || if_id.ir.name == 26)
         reg[34] = if_id.ir.jumpto;
-    }
     else if (if_id.ir.name == 25 || if_id.ir.name == 27)
-    {
         reg[34] = id_ex.a;
-    }
     else
-        reg[34] = reg[34] + 8;
+        reg[34] += 8;
     if (if_id.ir.name >= 6 && if_id.ir.name <= 25)
-    {
         id_ex.ir.rd = 0;
-    }
     if (if_id.ir.name == 26 || if_id.ir.name == 27)
-    {
         id_ex.ir.rd = 31;
-    }
     if_id.Clear();
 }
 
@@ -128,12 +139,6 @@ void Pipeline::EX()
     if (free3 > 0)
     {
         --free3;
-        ++free4;
-        return;
-    }
-    if (false) //data
-    {
-        lock3 = true;
         ++free4;
         return;
     }
@@ -243,79 +248,58 @@ void Pipeline::EX()
     case 5:
         o = (ir.u == NEG) ? -id_ex.a : (~(UI)id_ex.a);
         break;
-    case 6:
-        o = ir.jumpto;
-        break;
     case 7:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a == ir.offset;
         break;
     case 8:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a != ir.offset;
         break;
     case 9:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a <= ir.offset;
         break;
     case 10:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a < ir.offset;
         break;
     case 11:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a >= ir.offset;
         break;
     case 12:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a > ir.offset;
         break;
     case 13:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a == id_ex.b;
         break;
     case 14:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a != id_ex.b;
         break;
     case 15:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a <= id_ex.b;
         break;
     case 16:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a < id_ex.b;
         break;
     case 17:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a >= id_ex.b;
         break;
     case 18:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a > id_ex.b;
         break;
     case 19:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a == 0;
         break;
     case 20:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a != 0;
         break;
     case 21:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a <= 0;
         break;
     case 22:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a < 0;
         break;
     case 23:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a >= 0;
         break;
     case 24:
-        o = ir.jumpto;
         ex_mem.cond = id_ex.a > 0;
         break;
     case 25:
@@ -341,9 +325,6 @@ void Pipeline::EX()
     case 31:
         o = reg[33];
         break;
-    case 33:
-        //
-        break;
     }
     ex_mem.a = id_ex.a;
     ex_mem.b = id_ex.b;
@@ -360,14 +341,11 @@ void Pipeline::MEM(bool &running, int &ret)
     }
     mem_wb.ir = ex_mem.ir;
     mem_wb.aluOutput = ex_mem.aluOutput;
-    if (mem_wb.ir.name == 28)
+    if (mem_wb.ir.name == 28) // load or store
     {
         char *p = memory + ex_mem.aluOutput;
         switch (mem_wb.ir.u)
         {
-        case LA:
-            //mem_wb.lmd = ex_mem.aluOutput;
-            break;
         case LB:
             mem_wb.aluOutput = *p;
             break;
@@ -481,5 +459,5 @@ void Pipeline::Pipe(bool &running, int &ret)
     EX();
     ID();
     IF();
-    lock1 = lock2 = lock3 = lock4 = lock5 = false;
+    lock2 = lock3 = false;
 }

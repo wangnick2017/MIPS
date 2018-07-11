@@ -1,7 +1,8 @@
 ﻿  Program.cpp
+  main.cpp
   正在生成代码
-  3 of 680 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+  4 of 680 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   MIPS_Pipeline.vcxproj -> f:\Documents\Projects\MIPS\Release\MIPS_Pipeline.exe
