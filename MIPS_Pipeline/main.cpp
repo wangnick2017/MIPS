@@ -11,6 +11,7 @@ int main(int argc, char **argv)
     cin.tie(0);
     cout.tie(0);
     Program program;
+    program.InitNames();
     program.InputCodes(argv[1]);
     int ret = program.Run();
     return 0;

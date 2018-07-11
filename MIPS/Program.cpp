@@ -12,7 +12,7 @@ Program::~Program()
 
 void Program::InputCodes(char *fileName)
 {
-    ifstream codes(fileName);
+    ifstream codes("56.s");
     string code;
     stack<string> names;
     string tmp;
@@ -127,6 +127,7 @@ int Program::Run()
     }
     for (pc = labels["main"]; ; ++pc)
     {
+        cout << pc << endl;
         Order &o = orders[pc];
         switch (o.Type())
         {
