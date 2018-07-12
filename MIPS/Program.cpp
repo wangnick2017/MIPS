@@ -12,7 +12,7 @@ Program::~Program()
 
 void Program::InputCodes(char *fileName)
 {
-    ifstream codes("56.s");
+    ifstream codes(fileName);
     string code;
     stack<string> names;
     string tmp;

@@ -1,4 +1,8 @@
-﻿  Pipeline.cpp
+﻿  Instruction.cpp
+Instruction.cpp(101): warning C4244: “参数”: 从“ULL”转换到“const unsigned int”，可能丢失数据
+Instruction.cpp(102): warning C4244: “参数”: 从“ULL”转换到“const unsigned int”，可能丢失数据
+  main.cpp
+  Pipeline.cpp
 Pipeline.cpp(82): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
 Pipeline.cpp(120): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
 Pipeline.cpp(125): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
@@ -13,10 +17,7 @@ Pipeline.cpp(230): warning C4244: “=”: 从“LL”转换到“int”，可�
 Pipeline.cpp(242): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
 Pipeline.cpp(243): warning C4244: “=”: 从“ULL”转换到“int”，可能丢失数据
   Program.cpp
-  main.cpp
-  正在生成代码
-  14 of 680 functions ( 2.1%) were compiled, the rest were copied from previous compilation.
-    2 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
-  已完成代码的生成
+  Reader.cpp
+  正在生成代码...
+  LINK : 已指定 /LTCG，但不需要生成代码；从链接命令行中移除 /LTCG 以提高链接器性能
   MIPS_Prediction.vcxproj -> f:\Documents\Projects\MIPS\Release\MIPS_Prediction.exe

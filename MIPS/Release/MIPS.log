@@ -1,44 +1,6 @@
-﻿  正在生成代码
-LINK : fatal error C1001: 编译器中发生内部错误。
-  (编译器文件“f:\dd\vctools\compiler\utc\src\p2\main.c”，第 258 行)
-   要解决此问题，请尝试简化或更改上面所列位置附近的程序。
-  请选择 Visual C++
-  “帮助”菜单上的“技术支持”命令，或打开技术支持帮助文件来获得详细信息。
-    link!InvokeCompilerPass()+0x1eccd
-    link!InvokeCompilerPass()+0x1eccd
-    link!InvokeCompilerPass()+0x1e6e7
-    link!DllGetC2Telemetry()+0xcff42
-  
-LINK : fatal error C1001: 编译器中发生内部错误。
-  (编译器文件“f:\dd\vctools\compiler\utc\src\p2\main.c”，第 258 行)
-   要解决此问题，请尝试简化或更改上面所列位置附近的程序。
-  请选择 Visual C++
-  “帮助”菜单上的“技术支持”命令，或打开技术支持帮助文件来获得详细信息。
-    link!InvokeCompilerPass()+0x1eccd
-    link!InvokeCompilerPass()+0x1e6e7
-    link!DllGetC2Telemetry()+0xcff42
-  
-  
-LINK : fatal error LNK1000: Internal error during IMAGE::BuildImage
-  
-    Version 14.12.25834.0
-  
-    ExceptionCode            = C0000005
-    ExceptionFlags           = 00000000
-    ExceptionAddress         = 5055DA47 (50130000) "E:\Program Files\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.12.25827\bin\HostX86\x86\c2.dll"
-    NumberParameters         = 00000002
-    ExceptionInformation[ 0] = 00000000
-    ExceptionInformation[ 1] = 0D5560DC
-  
-  CONTEXT:
-    Eax    = 0D5560DC  Esp    = 001EE428
-    Ebx    = 03520113  Ebp    = 001EE458
-    Ecx    = 00000005  Esi    = 0D5560DC
-    Edx    = 05D0902C  Edi    = 001EE438
-    Eip    = 5055DA47  EFlags = 00010202
-    SegCs  = 00000023  SegDs  = 0000002B
-    SegSs  = 0000002B  SegEs  = 0000002B
-    SegFs  = 00000053  SegGs  = 0000002B
-    Dr0    = 00000000  Dr3    = 00000000
-    Dr1    = 00000000  Dr6    = 00000000
-    Dr2    = 00000000  Dr7    = 00000000
+﻿  main.cpp
+  Order.cpp
+  Program.cpp
+  正在生成代码...
+  LINK : 已指定 /LTCG，但不需要生成代码；从链接命令行中移除 /LTCG 以提高链接器性能
+  MIPS.vcxproj -> f:\Documents\Projects\MIPS\Release\MIPS.exe
